@@ -20,6 +20,7 @@ package pgraph
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"sync"
 
@@ -588,6 +589,7 @@ func (g *Graph) GraphSync(oldGraph *Graph) (*Graph, error) {
 		if !VertexContains(v, vertexKeep) {
 			// wait for exit before starting new graph!
 			v.SendEvent(event.EventExit, nil) // sync
+			<-v.Res.Stopped()                 // block until stopped
 			oldGraph.DeleteVertex(v)
 		}
 	}
